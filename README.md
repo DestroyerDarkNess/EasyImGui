@@ -106,6 +106,10 @@ If within your ImGui code you launch controls that block the Main UI, such as Op
 
 ![Captura de pantalla 2024-01-16 194153](https://github.com/DestroyerDarkNess/EasyImGui/assets/32405118/90fe71ea-9ec4-4f10-befe-2f95d83fac51)
 
+### Credits
+
+[Sewer56](https://github.com/Sewer56/) : For his [https://github.com/Sewer56/](https://github.com/Sewer56/DearImguiSharp) library.
+[Veldrid Discord Server](https://discord.gg/s5EvvWJ) : Thanks to the community for the help, especially to [zaafar](https://github.com/zaafar/) and his [ClickableTransparentOverlay](https://github.com/zaafar/ClickableTransparentOverlay) project .
 
 ### License
 ```
