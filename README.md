@@ -109,6 +109,7 @@ If within your ImGui code you launch controls that block the Main UI, such as Op
 ### Credits
 
 [Sewer56](https://github.com/Sewer56/) : For his [https://github.com/Sewer56/](https://github.com/Sewer56/DearImguiSharp) library.
+
 [Veldrid Discord Server](https://discord.gg/s5EvvWJ) : Thanks to the community for the help, especially to [zaafar](https://github.com/zaafar/) and his [ClickableTransparentOverlay](https://github.com/zaafar/ClickableTransparentOverlay) project .
 
 ### License
