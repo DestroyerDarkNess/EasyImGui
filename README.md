@@ -10,6 +10,35 @@
   💠 Please leave a Star to the repository ✅ if you liked it. ✨
 </p>
 
+- Install via NuGet Package :
+  ```
+  dotnet add package EasyImGui --version 1.0.0
+  ```
+
+# Example Projects
+
+| Sample | Description       |
+|----------|---------------|
+| [Universal.FPS.Counter](https://github.com/DestroyerDarkNess/Universal.FPS.Counter) | A Universal FPS Counter for games |
+
+# Features
+
+
+EasyImGui allows you to Create your GUI with ImGui, without having to configure anything, you don't need any additional knowledge.
+
+You just need to install EasyImGui from NuGet and that's it! .
+
+EasyImGui has two Imgui Views:
+
+1) ImGuiForm: A Single View, It does not support multi-Windows, and to work, it must be Launched with:
+  ```Application.Run(SingleImguiWindow);``` .
+
+2) MultiImGuiForm: Allows Multiple Imgui Windows, It can be launched normally with ```.Show()```, It has no restrictions and using WinAPIS, you could embed the windows in Controls Panel or in other Forms.
+
+ *Note: *
+
+If within your ImGui code you launch controls that block the Main UI, such as OpenFileDialog or MessageBox.Show, it will cause your application to fail, this is easy to solve, Simply do everything Asynchronously, Without Dialogs ```".ShowDialog()"```
+
 ## Example
 
 ### Single Imgui Window.
