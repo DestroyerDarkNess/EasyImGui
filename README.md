@@ -19,7 +19,7 @@
 
 | Sample | Description       |
 |----------|---------------|
-| [Universal.FPS.Counter](https://github.com/DestroyerDarkNess/Universal.FPS.Counter) | A Universal FPS Counter for games |
+| [EasyImGui.Samples](https://github.com/DestroyerDarkNess/EasyImGui/tree/main/Samples/EasyImGui.Samples) | Examples in C# and VB |
 
 # Features
 
@@ -28,14 +28,14 @@ EasyImGui allows you to Create your GUI with ImGui, without having to configure 
 
 You just need to install EasyImGui from NuGet and that's it! .
 
-EasyImGui has two Imgui Views:
+**EasyImGui has two Imgui Views:**
 
-1) ImGuiForm: A Single View, It does not support multi-Windows, and to work, it must be Launched with:
+1) **ImGuiForm:** A Single View, It does not support multi-Windows, and to work, it must be Launched with:
   ```Application.Run(SingleImguiWindow);``` .
 
-2) MultiImGuiForm: Allows Multiple Imgui Windows, It can be launched normally with ```.Show()```, It has no restrictions and using WinAPIS, you could embed the windows in Controls Panel or in other Forms.
+2) **MultiImGuiForm:** Allows Multiple Imgui Windows, It can be launched normally with ```.Show()```, It has no restrictions and using WinAPIS, you could embed the windows in Controls Panel or in other Forms.
 
- *Note: *
+ *Note:*
 
 If within your ImGui code you launch controls that block the Main UI, such as OpenFileDialog or MessageBox.Show, it will cause your application to fail, this is easy to solve, Simply do everything Asynchronously, Without Dialogs ```".ShowDialog()"```
 
@@ -99,6 +99,13 @@ If within your ImGui code you launch controls that block the Main UI, such as Op
             MultiForm.Show();
 ```
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
+
+### Preview
+
+![Captura de pantalla 2024-01-16 194047](https://github.com/DestroyerDarkNess/EasyImGui/assets/32405118/1ce3f2e7-7480-4832-a459-a1397493a1a3)
+
+![Captura de pantalla 2024-01-16 194153](https://github.com/DestroyerDarkNess/EasyImGui/assets/32405118/90fe71ea-9ec4-4f10-befe-2f95d83fac51)
+
 
 ### License
 ```
