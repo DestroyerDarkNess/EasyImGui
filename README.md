@@ -19,6 +19,7 @@
 
 | Sample | Description       |
 |----------|---------------|
+| [EasyColorPicker](https://github.com/DestroyerDarkNess/EasyColorPicker)| A color picker made with EasyImGui |
 | [EasyImGui.Samples](https://github.com/DestroyerDarkNess/EasyImGui/tree/main/Samples/EasyImGui.Samples) | Examples in C# and VB |
 
 # Features
