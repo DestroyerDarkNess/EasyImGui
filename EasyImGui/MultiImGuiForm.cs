@@ -21,6 +21,9 @@ namespace EasyImGui
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        public event RenderUI_EventHandler OnReady = delegate {
+            return true;
+        };
 
         public event RenderUI_EventHandler Render = delegate {
             return true;
@@ -85,7 +88,7 @@ namespace EasyImGui
                             };
 
                             Imgui.RenderEvent += delegate { return Render(); };
-
+                           
                         }
 
                     }
@@ -109,26 +112,8 @@ namespace EasyImGui
 
                             if (Imgui.Imgui_Ini == true && Imgui.IO != null)
                             {
-
-                                Imgui.IO.WantCaptureKeyboard = Draw;
-                                Imgui.IO.WantCaptureMouse = Draw;
-                                Imgui.IO.MouseDrawCursor = Draw;
-
-                                //D3D9WindowForm.EnableDrag = (DearImguiSharp.ImGui.IsAnyItemActive() == false) ? true : false;
-                                //// External Input Hook
-                                //if (InputHooks == null)
-                                //{
-                                //    int MenuKeyState = WinApi.GetAsyncKeyState(Dllmain.KeyMenu);
-
-                                //    if (MenuKeyState != 0) { Instances.Draw = !Instances.Draw; }
-
-                                //    InputHook.Universal(Imgui.IO);
-
-                                //} 
-
-
-
-
+                                if (Form.ActiveForm == this)
+                                    InputHook.Universal(Imgui.IO);
                             }
 
                             D3DDevice.EndScene();
@@ -156,6 +141,8 @@ namespace EasyImGui
             {
                 MessageBox.Show("Error: " + ex.Message, "D3D Error");
             }
+
+            OnReady();
             base.OnShown(e);
         }
 

@@ -41,11 +41,11 @@
     <Reference Include="CppSharp.Runtime">
       <HintPath>..\Libs\CppSharp.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="RenderSpy, Version=1.6.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RenderSpy.1.6.7\lib\net46\RenderSpy.dll</HintPath>
+    <Reference Include="RenderSpy, Version=1.6.8.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RenderSpy.1.6.8.1\lib\net46\RenderSpy.dll</HintPath>
     </Reference>
-    <Reference Include="RenderSpy.ImGui, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RenderSpy.ImGui.1.0.2\lib\net48\RenderSpy.ImGui.dll</HintPath>
+    <Reference Include="RenderSpy.ImGui, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RenderSpy.ImGui.1.0.3\lib\net48\RenderSpy.ImGui.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -64,6 +64,9 @@
     <Compile Include="Core\InputHook.cs" />
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="CustomImGuiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ImGuiForm.cs">
       <SubType>Form</SubType>
     </Compile>

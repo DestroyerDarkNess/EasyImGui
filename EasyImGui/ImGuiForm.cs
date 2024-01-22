@@ -62,7 +62,7 @@ namespace EasyImGui
         {
             this.Text = "EasyImgui";
             this.VisibleChanged += this.ImGuiForm_VisibleChanged;
-
+            
             if (D3DDevice == null)
             {
                 try
@@ -103,8 +103,7 @@ namespace EasyImGui
 
                                     return true;
                                 }; ;
-
-
+                              
                             }
 
                         }
@@ -125,11 +124,8 @@ namespace EasyImGui
                                 if (Imgui.Imgui_Ini == true && Imgui.IO != null)
                                 {
 
-                                    Imgui.IO.WantCaptureKeyboard = this.DrawMenu;
-                                    Imgui.IO.WantCaptureMouse = this.DrawMenu;
-                                    Imgui.IO.MouseDrawCursor = this.DrawMenu;
-                                    InputHook.Universal(Imgui.IO);
-
+                                    if (Form.ActiveForm == this)
+                                        InputHook.Universal(Imgui.IO);
 
                                     this.EnableDrag = (DragWindow == true && DearImguiSharp.ImGui.IsAnyItemActive() == false) ? true : false;
 
@@ -189,7 +185,6 @@ namespace EasyImGui
             }
             base.WndProc(ref message);
         }
-
 
 
         #region IDisposable implementation with finalizer
