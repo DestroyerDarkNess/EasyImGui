@@ -38,6 +38,8 @@ You just need to install EasyImGui from NuGet and that's it! .
 
  *Note:*
 
+**EasyImGui uses DearImGuiSharp, so any question related to ImGui should be asked in its official Reposttory:** [https://github.com/Sewer56/DearImguiSharp](https://github.com/Sewer56/DearImguiSharp)
+
 If within your ImGui code you launch controls that block the Main UI, such as OpenFileDialog or MessageBox.Show, it will cause your application to fail, this is easy to solve, Simply do everything Asynchronously, Without Dialogs ```".ShowDialog()"```
 
 ## Example
@@ -106,6 +108,8 @@ If within your ImGui code you launch controls that block the Main UI, such as Op
 ![Captura de pantalla 2024-01-16 194047](https://github.com/DestroyerDarkNess/EasyImGui/assets/32405118/1ce3f2e7-7480-4832-a459-a1397493a1a3)
 
 ![Captura de pantalla 2024-01-16 194153](https://github.com/DestroyerDarkNess/EasyImGui/assets/32405118/90fe71ea-9ec4-4f10-befe-2f95d83fac51)
+
+![image](https://github.com/DestroyerDarkNess/EasyImGui/assets/32405118/9ba38227-e8c1-4e79-a949-55f5e83a8daf)
 
 ### Credits
 
