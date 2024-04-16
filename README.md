@@ -40,118 +40,86 @@ If within your ImGui code you launch controls that block the Main UI, such as Op
 ### DX9 Overlay + Imgui Window.
 
 ```C
-       Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, NoActiveWindow = true,  Fix_WM_NCLBUTTONDBLCLK = true};
+  Overlay OverlayWindow = new Overlay() { EnableDrag = true, ResizableBorders = true,  Fix_WM_NCLBUTTONDBLCLK = true };
 
-  //OverlayWindow.WindowStyles = WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW | WS_EX_TOPMOST;
+ //SingleImguiWindow.ImGuiWindowFlagsEx = DearImguiSharp.ImGuiWindowFlags.NoTitleBar;
+ OverlayWindow.OnImGuiReady += (object sender, bool Status) =>
+ {
 
-  OverlayWindow.OnImGuiReady += (object sender, bool Status) =>
-  {
+     if (Status)
+     {
+         OverlayWindow.Imgui.ConfigContex += delegate {
 
-      if (Status)
-      {
-      
-          OverlayWindow.Imgui.ConfigContex += delegate {
+             //DearImguiSharp.ImGui.StyleColorsLight(null);
 
-              //DearImguiSharp.ImGui.StyleColorsLight(null);
+             var style = ImGui.GetStyle();
 
-              var style = ImGui.GetStyle();
+             ImVec4[] styleColors = style.Colors;
+             styleColors[(int)ImGuiCol.CheckMark].W = 1.0f;
+             styleColors[(int)ImGuiCol.CheckMark].X = 1.0f;
+             styleColors[(int)ImGuiCol.CheckMark].Y = 1.0f;
+             styleColors[(int)ImGuiCol.CheckMark].Z = 1.0f;
 
-              ImVec4[] styleColors = style.Colors;
-              styleColors[(int)ImGuiCol.CheckMark].W = 1.0f;
-              styleColors[(int)ImGuiCol.CheckMark].X = 1.0f;
-              styleColors[(int)ImGuiCol.CheckMark].Y = 1.0f;
-              styleColors[(int)ImGuiCol.CheckMark].Z = 1.0f;
+             styleColors[(int)ImGuiCol.FrameBg].W = 0.0f;
+             styleColors[(int)ImGuiCol.FrameBg].X = 0.0f;
+             styleColors[(int)ImGuiCol.FrameBg].Y = 0.0f;
+             styleColors[(int)ImGuiCol.FrameBg].Z = 0.0f;
 
-              styleColors[(int)ImGuiCol.FrameBg].W = 0.0f;
-              styleColors[(int)ImGuiCol.FrameBg].X = 0.0f;
-              styleColors[(int)ImGuiCol.FrameBg].Y = 0.0f;
-              styleColors[(int)ImGuiCol.FrameBg].Z = 0.0f;
+             style.WindowRounding = 5.0f;
+             style.FrameRounding = 5.0f;
+             style.FrameBorderSize = 1.0f;
 
-              style.WindowRounding = 5.0f;
-              style.FrameRounding = 5.0f;
-              style.FrameBorderSize = 1.0f;
 
+
+             //OverlayWindow.Imgui.IO.ConfigFlags |= (int)ImGuiConfigFlags.ViewportsEnable;
+
+             return true;
+         };
+
+
+         bool DrawImguiMenu = true;
+
+         SharpDX.Direct3D9.Device device = OverlayWindow.D3DDevice;
+
+         OverlayWindow.Imgui.Render += delegate {
+
+
+             if (DrawImguiMenu == false) { OverlayWindow.Close();  return true; }
+
+             if (OverlayWindow.Imgui.Imgui_Ini == true && OverlayWindow.Imgui.IO != null)
+             {
+
+                 // Overlay Dragger
+                 bool IsFocusOnMainImguiWindow = (Form.ActiveForm == OverlayWindow); // Old : DearImguiSharp.ImGui.IsWindowFocused((int)DearImguiSharp.ImGuiFocusedFlags.RootWindow);
+                 if (IsFocusOnMainImguiWindow == true) { InputHook.Universal(OverlayWindow.Imgui.IO); }
+                 OverlayWindow.EnableDrag = (DearImguiSharp.ImGui.IsAnyItemActive() == true) ? false : IsFocusOnMainImguiWindow;
+
+                 DearImguiSharp.ImGui.SetNextWindowPos(new ImVec2 { X = 0, Y = 0 }, 0, new ImVec2 { X = 0, Y = 0 });
+                 DearImguiSharp.ImGui.SetNextWindowSize(new ImVec2() { X = OverlayWindow.ClientSize.Width , Y = OverlayWindow.ClientSize.Height  }, 0);
+
+                 DearImguiSharp.ImGui.Begin(OverlayWindow.Text, ref DrawImguiMenu, 0); // (int)ImGuiWindowFlags.NoResize | (int)ImGuiWindowFlags.NoMove | (int)ImGuiWindowFlags.NoCollapse | (int)ImGuiWindowFlags.NoBringToFrontOnFocus
+
+                 if (DearImguiSharp.ImGui.Button("Message", new DearImguiSharp.ImVec2() { X = OverlayWindow.ClientSize.Width - 15, Y = 20 }))
+                 {
+                     Task.Run(() =>
+                     {
+                         MessageBox.Show("Hello World!");
+                     });
+                 }
+
+                 if (DearImguiSharp.ImGui.Button("Exit", new DearImguiSharp.ImVec2() { X = OverlayWindow.ClientSize.Width - 15, Y = 20 }))
+                     OverlayWindow.Close();
+
+             }
+
+             return true;
+         };
+
+     }
+ };
+
+ try { Application.Run(OverlayWindow); } catch { Environment.Exit(0); }
           
-
-              //OverlayWindow.Imgui.IO.ConfigFlags |= (int)ImGuiConfigFlags.ViewportsEnable;
-
-              return true;
-          };
-
-
-          bool DrawImguiMenu = true;
-
-          SharpDX.Direct3D9.Device device = OverlayWindow.D3DDevice;
-
-          Process GameProc = Process.GetProcessesByName("CodeSmart").FirstOrDefault();
-
-          OverlayWindow.Imgui.Render += delegate {
-
-
-              if (OverlayWindow.FontSurfaces.Count != 0) { OverlayWindow.FontSurfaces[0].DrawText(null, "https://github.com/DestroyerDarkNess/RenderSpy" + Environment.NewLine + "Discord: Destroyer#8328", 0, 0, SharpDX.Color.Red); }
-
-              //                  if (OverlayWindow.LineSurfaces.Count != 0) { OverlayWindow.LineSurfaces[0].Draw(new[] {
-              //new RawVector2(100, 100),  // Superior izquierda
-              //new RawVector2(20, 500),  // Superior derecha
-              //}, Color.Red); }
-
-              OverlayWindow.FitTo(GameProc.MainWindowHandle, true);
-              OverlayWindow.PlaceAbove(GameProc.MainWindowHandle);
-
-              if (DrawImguiMenu == false && OverlayWindow.Visible == true) { return true; }
-
-              if (OverlayWindow.Imgui.Imgui_Ini == true && OverlayWindow.Imgui.IO != null)
-              {
-
-                  // Overlay Dragger
-                  //bool IsFocusOnMainImguiWindow = (Form.ActiveForm == OverlayWindow); // Old : DearImguiSharp.ImGui.IsWindowFocused((int)DearImguiSharp.ImGuiFocusedFlags.RootWindow);
-                  //if (IsFocusOnMainImguiWindow == true) { InputHook.Universal(OverlayWindow.Imgui.IO); }
-                  //OverlayWindow.EnableDrag =  (DearImguiSharp.ImGui.IsAnyItemActive() == true) ? false : IsFocusOnMainImguiWindow;
-
-
-
-                  //DearImguiSharp.ImGui.SetNextWindowPos(new ImVec2 { X = 500, Y = 50 }, 0, new ImVec2 { X = 0, Y = 0 });
-                  //DearImguiSharp.ImGui.SetNextWindowSize(new ImVec2() { X = OverlayWindow.ClientSize.Width -100, Y = OverlayWindow.ClientSize.Height -100}, 0);
-
-                  DearImguiSharp.ImGui.Begin(OverlayWindow.Text, ref DrawImguiMenu, 0); // (int)ImGuiWindowFlags.NoResize | (int)ImGuiWindowFlags.NoMove | (int)ImGuiWindowFlags.NoCollapse | (int)ImGuiWindowFlags.NoBringToFrontOnFocus
-
-                  if (DearImguiSharp.ImGui.Button("Message", new DearImguiSharp.ImVec2() { X = 200, Y = 20 }))
-                  {
-                     
-                      Task.Run(() =>
-                      {
-                          MessageBox.Show("Hello World!");
-                      });
-
-                  }
-
-                  if (DearImguiSharp.ImGui.Button("Close Me", new DearImguiSharp.ImVec2() { X = 200, Y = 20 }))
-                      DrawImguiMenu = false;
-
-                  ImGui.Text("Hola ImGui!" );
-                  ImGui.TextColored(new ImVec4() { W= 14, X = 14, Y = 14, Z = 14 }, "Texto verde");
-                  ImGui.TextWrapped("Este texto se ajusta al ancho disponible");
-
-                  // Líneas
-                  ImGui.Separator();
-                  ImGui.NewLine();
-                  ImGui.ImDrawListAddPolyline(ImGui.GetWindowDrawList(), new ImVec2() { X = 100, Y = 100 },1 , 5, 5 , 4.5f);
-
-                  // Círculos
-                  ImGui.ImDrawListAddCircle(ImGui.GetWindowDrawList(), new ImVec2() { X = 100, Y = 100 }, 50, 5, 4 , 4.5f);
-                 
-                  DearImguiSharp.ImGui.End();
-              }
-
-
-              return true; 
-          
-          };
-
-      }
-  };
-
-  Application.Run(OverlayWindow);
 ```
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#table-of-contents)
