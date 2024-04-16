@@ -12,7 +12,7 @@
 
 - Install via NuGet Package :
   ```
-  dotnet add package EasyImGui --version 1.0.2
+  dotnet add package EasyImGui --version 1.0.4.1
   ```
 
 # Example Projects
