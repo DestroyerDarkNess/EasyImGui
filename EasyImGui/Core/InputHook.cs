@@ -191,4 +191,5 @@ namespace EasyImGui.Core
         #endregion
 
     }
+
 }

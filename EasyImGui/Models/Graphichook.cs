@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasyImGui.Models
 {
-    public class Graphichook
+    public class GraphicHook
     {
         public bool IsAttached { get; set; } = false;
 

@@ -1,0 +1,15 @@
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\EasyImGui.pdb
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\CppSharp.Runtime.dll
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\RenderSpy.ImGui.dll
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\RenderSpy.ImGui.pdb
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.csproj.AssemblyReference.cache
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.Properties.Resources.resources
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.csproj.GenerateResource.cache
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.csproj.CopyComplete
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.pdb
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\RenderSpy.dll
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\RenderSpy.pdb
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\EasyImGui.dll.config
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\bin\Debug\EasyImGui.dll
+C:\Users\Usuario\source\repos\EasyImGui\EasyImGui\obj\Debug\EasyImGui.dll

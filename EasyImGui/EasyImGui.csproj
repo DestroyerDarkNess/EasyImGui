@@ -33,7 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>
+    </StartupObject>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup />
@@ -41,8 +42,8 @@
     <Reference Include="CppSharp.Runtime">
       <HintPath>..\Libs\CppSharp.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="RenderSpy, Version=1.6.8.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RenderSpy.1.6.8.1\lib\net46\RenderSpy.dll</HintPath>
+    <Reference Include="RenderSpy, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RenderSpy.1.7.2\lib\net46\RenderSpy.dll</HintPath>
     </Reference>
     <Reference Include="RenderSpy.ImGui, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RenderSpy.ImGui.1.0.3\lib\net48\RenderSpy.ImGui.dll</HintPath>
@@ -62,19 +63,51 @@
   <ItemGroup>
     <Compile Include="Core\ImGuiHook.cs" />
     <Compile Include="Core\InputHook.cs" />
+    <Compile Include="Example.cs" />
+    <Compile Include="GameOverlay\Brushes.cs" />
+    <Compile Include="GameOverlay\Drawing\Color.cs" />
+    <Compile Include="GameOverlay\Drawing\CrosshairStyle.cs" />
+    <Compile Include="GameOverlay\Drawing\Font.cs" />
+    <Compile Include="GameOverlay\Drawing\Geometry.cs" />
+    <Compile Include="GameOverlay\Drawing\Graphics.cs" />
+    <Compile Include="GameOverlay\Drawing\Graphics.EventArgs.cs" />
+    <Compile Include="GameOverlay\Drawing\Graphics.Primitives.cs" />
+    <Compile Include="GameOverlay\Drawing\IBrush.cs" />
+    <Compile Include="GameOverlay\Drawing\Image.cs" />
+    <Compile Include="GameOverlay\Drawing\Imaging\ImageDecoder.cs" />
+    <Compile Include="GameOverlay\Drawing\LinearGradientBrush.cs" />
+    <Compile Include="GameOverlay\Drawing\Scene.cs" />
+    <Compile Include="GameOverlay\Drawing\SolidBrush.cs" />
+    <Compile Include="GameOverlay\Drawing\TransformationMatrix.cs" />
+    <Compile Include="GameOverlay\Fonts.cs" />
+    <Compile Include="GameOverlay\GraphicsExtensions.cs" />
+    <Compile Include="GameOverlay\OverrideHelper.cs" />
+    <Compile Include="GameOverlay\PInvoke\DwmApi.cs" />
+    <Compile Include="GameOverlay\PInvoke\DwmApi.Types.cs" />
+    <Compile Include="GameOverlay\PInvoke\DynamicImport.cs" />
+    <Compile Include="GameOverlay\PInvoke\Undocumented.cs" />
+    <Compile Include="GameOverlay\PInvoke\Undocumented.Types.cs" />
+    <Compile Include="GameOverlay\PInvoke\User32.cs" />
+    <Compile Include="GameOverlay\PInvoke\User32.Types.cs" />
+    <Compile Include="GameOverlay\PInvoke\Winmm.cs" />
+    <Compile Include="GameOverlay\PInvoke\Winmm.Types.cs" />
+    <Compile Include="GameOverlay\ThrowHelper.cs" />
+    <Compile Include="GameOverlay\TimerService.cs" />
+    <Compile Include="GameOverlay\Windows\GraphicsWindow.cs" />
+    <Compile Include="GameOverlay\Windows\GraphicsWindow.EventArgs.cs" />
+    <Compile Include="GameOverlay\Windows\OverlayWindow.cs" />
+    <Compile Include="GameOverlay\Windows\OverlayWindow.EventArgs.cs" />
+    <Compile Include="GameOverlay\Windows\StickyWindow.cs" />
+    <Compile Include="GameOverlay\Windows\WindowBounds.cs" />
+    <Compile Include="GameOverlay\Windows\WindowHelper.cs" />
     <Compile Include="Helpers\ExceptionHandler.cs" />
     <Compile Include="Helpers\Utils.cs" />
-    <Compile Include="CustomImGuiForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImGuiForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Models\Graphichook.cs" />
-    <Compile Include="MultiImGuiForm.cs">
+    <Compile Include="Models\GraphicHook.cs" />
+    <Compile Include="Overlay.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Test.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

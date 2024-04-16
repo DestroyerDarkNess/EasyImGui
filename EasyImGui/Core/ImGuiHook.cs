@@ -30,15 +30,18 @@ namespace EasyImGui.Core
 
         public delegate bool RenderUI_EventHandler();
 
-        public event RenderUI_EventHandler RenderEvent = null;
+        public event RenderUI_EventHandler Render = null;
+
+        public event RenderUI_EventHandler OnLostDevice = null;
+        public event RenderUI_EventHandler OnResetDevice = null;
 
         private bool OnRenderEvent()
         {
 
             try {
-                if (RenderEvent != null)
+                if (Render != null)
                 {
-                    return RenderEvent.Invoke();
+                    return Render.Invoke();
                 }
                 else { return false; }
             } catch (Exception ex) { ExceptionHandler.HandleException(ex); return false;  }
@@ -47,16 +50,16 @@ namespace EasyImGui.Core
 
         public delegate bool ImguiIsReady();
 
-        public event RenderUI_EventHandler ConfigContexEvent = null;
+        public event RenderUI_EventHandler ConfigContex = null;
 
-        private bool ConfigContex()
+        private bool OnConfigContex()
         {
 
             try
             {
-                if (ConfigContexEvent != null)
+                if (ConfigContex != null)
                 {
-                    return ConfigContexEvent.Invoke();
+                    return ConfigContex.Invoke();
                 }
                 else { return false; }
             }
@@ -103,161 +106,97 @@ namespace EasyImGui.Core
 
         }
 
-        public Models.Graphichook Attach(IntPtr GameHandle)
+        public Models.GraphicHook Attach(IntPtr GameHandle)
         {
 
-            Models.Graphichook Results = new Models.Graphichook();
+            Models.GraphicHook Results = new Models.GraphicHook();
 
             try
             {
 
-                Results.GraphicsType = GraphicsT;
-
-                switch (GraphicsT)
+                if ( RenderSpy.Graphics.Detector.GetCurrentGraphicsType() == RenderSpy.Graphics.GraphicsType.d3d9)
                 {
-                    case RenderSpy.Graphics.GraphicsType.d3d9:
 
-                        RenderSpy.Graphics.d3d9.Present PresentHook_9 = new RenderSpy.Graphics.d3d9.Present();
-                        PresentHook_9.Install();
+                    RenderSpy.Graphics.d3d9.Present PresentHook_9 = new RenderSpy.Graphics.d3d9.Present();
+                    PresentHook_9.Install();
 
-                        CurrentHooks.Add(PresentHook_9);
+                    CurrentHooks.Add(PresentHook_9);
 
-                        PresentHook_9.PresentEvent += (IntPtr device, IntPtr sourceRect, IntPtr destRect, IntPtr hDestWindowOverride, IntPtr dirtyRegion) =>
+                    PresentHook_9.PresentEvent += (IntPtr device, IntPtr sourceRect, IntPtr destRect, IntPtr hDestWindowOverride, IntPtr dirtyRegion) =>
+                    {
+                        if (Imgui_Ini == false)
                         {
-                            if (Imgui_Ini == false) {
-                                  Imgui_Ini = true;
+                            Imgui_Ini = true;
 
-                                try
-                                {
-
-                                    SharpDX.Direct3D9.Device dev = (SharpDX.Direct3D9.Device)device;
-                                    var swapChain = dev.GetSwapChain(0);
-                                    var DevwindowHandle = dev.CreationParameters.HFocusWindow;
-                                    var swapChainHandle = swapChain.PresentParameters.DeviceWindowHandle;
-                                    DevwindowHandle = DevwindowHandle == IntPtr.Zero ? swapChainHandle : DevwindowHandle;
-
-                                    if (DevwindowHandle != IntPtr.Zero)
-                                    {
-                                        WindowHandle = DevwindowHandle;
-
-                                    }
-                                    else { WindowHandle = GameHandle; }
-
-
-
-                                    if (Context == null) { Context = DearImguiSharp.ImGui.CreateContext(null); }
-                                    
-                                    IO = Context.IO;
-
-                                    ConfigContex();
-
-                                    DearImguiSharp. ImGui.StyleColorsDark(null);
-
-                                    DearImguiSharp.ImGui.ImGuiImplWin32Init(WindowHandle);
-                                    DearImguiSharp.ImGui.__Internal.ImGuiImplDX9Init(device);
-                                    
-                                }
-                                catch (Exception ex) { Imgui_Ini = false; Helpers.ExceptionHandler.HandleException(ex); }
-                               
-                            }
-                            else 
+                            try
                             {
-                                try {
-                                    RenderBegin();
-                                    OnRenderEvent();
-                                    RenderEnd();
-                                } catch (Exception Ex) { Helpers.ExceptionHandler.HandleException(Ex); }
-                               
+
+                                SharpDX.Direct3D9.Device dev = (SharpDX.Direct3D9.Device)device;
+                                var swapChain = dev.GetSwapChain(0);
+                                var DevwindowHandle = dev.CreationParameters.HFocusWindow;
+                                var swapChainHandle = swapChain.PresentParameters.DeviceWindowHandle;
+                                DevwindowHandle = DevwindowHandle == IntPtr.Zero ? swapChainHandle : DevwindowHandle;
+
+                                if (DevwindowHandle != IntPtr.Zero)
+                                {
+                                    WindowHandle = DevwindowHandle;
+
+                                }
+                                else { WindowHandle = GameHandle; }
+
+
+                                if (Context == null) { Context = DearImguiSharp.ImGui.CreateContext(null); }
+
+                                IO = Context.IO;
+
+                                DearImguiSharp.ImGui.StyleColorsDark(null);
+
+                                OnConfigContex();
+
+                                DearImguiSharp.ImGui.ImGuiImplWin32Init(WindowHandle);
+                                DearImguiSharp.ImGui.__Internal.ImGuiImplDX9Init(device);
+
                             }
+                            catch (Exception ex) { Imgui_Ini = false; Helpers.ExceptionHandler.HandleException(ex); }
 
-                            return PresentHook_9.Present_orig(device, sourceRect, destRect, hDestWindowOverride, dirtyRegion);
-                        };
-
-                        RenderSpy.Graphics.d3d9.Reset ResetHook_9 = new RenderSpy.Graphics.d3d9.Reset();
-                        ResetHook_9.Install();
-                        CurrentHooks.Add(ResetHook_9);
-
-                        ResetHook_9.Reset_Event += (IntPtr device, ref SharpDX.Direct3D9.PresentParameters presentParameters) =>
+                        }
+                        else
                         {
+                            try
+                            {
+                                RenderBegin();
+                                OnRenderEvent();
+                                RenderEnd();
+                            }
+                            catch (Exception Ex) { Helpers.ExceptionHandler.HandleException(Ex); }
 
-                            if (Imgui_Ini == true) { DearImguiSharp.ImGui.ImGuiImplDX9InvalidateDeviceObjects(); }
-                              
-                            int Reset = ResetHook_9.Reset_orig(device, ref presentParameters);
+                        }
 
-                            if (Imgui_Ini == true) { DearImguiSharp.ImGui.ImGuiImplDX9CreateDeviceObjects(); }
-                            
-                            return Reset;
-                        };
+                        return PresentHook_9.Present_orig(device, sourceRect, destRect, hDestWindowOverride, dirtyRegion);
+                    };
 
-                        break;
-                    case RenderSpy.Graphics.GraphicsType.d3d10:
+                    RenderSpy.Graphics.d3d9.Reset ResetHook_9 = new RenderSpy.Graphics.d3d9.Reset();
+                    ResetHook_9.Install();
+                    CurrentHooks.Add(ResetHook_9);
 
-                        RenderSpy. Graphics.d3d10.Present PresentHook_10 = new RenderSpy.Graphics.d3d10.Present();
-                        PresentHook_10.Install();
+                    ResetHook_9.Reset_Event += (IntPtr device, ref SharpDX.Direct3D9.PresentParameters presentParameters) =>
+                    {
+                        OnLostDevice?.Invoke();
+                        if (Imgui_Ini == true) { DearImguiSharp.ImGui.ImGuiImplDX9InvalidateDeviceObjects(); }
 
-                        CurrentHooks.Add(PresentHook_10);
+                        int Reset = ResetHook_9.Reset_orig(device, ref presentParameters);
+                      
+                        if (Imgui_Ini == true) { DearImguiSharp.ImGui.ImGuiImplDX9CreateDeviceObjects(); }
+                        OnResetDevice?.Invoke();
 
-                        PresentHook_10.PresentEvent += (swapChainPtr, syncInterval, flags) =>
-                        {
+                        return Reset;
+                    };
 
-                            return PresentHook_10.Present_orig(swapChainPtr, syncInterval, flags);
-                        };
+                    Results.IsAttached = (CurrentHooks.Count != 0);
 
-                        break;
-                    case RenderSpy.Graphics.GraphicsType.d3d11:
+                } else { throw new Exception("Undefine Render"); }
 
-                        RenderSpy.Graphics.d3d11.Present PresentHook_11 = new RenderSpy.Graphics.d3d11.Present();
-                        PresentHook_11.Install();
-
-                        CurrentHooks.Add(PresentHook_11);
-
-                        PresentHook_11.PresentEvent += (swapChainPtr, syncInterval, flags) =>
-                        {
-
-                            return PresentHook_11.Present_orig(swapChainPtr, syncInterval, flags);
-                        };
-
-                        break;
-                    case RenderSpy.Graphics.GraphicsType.d3d12:
-
-                        RenderSpy. Graphics.d3d12.Present PresentHook_12 = new RenderSpy.Graphics.d3d12.Present();
-                        PresentHook_12.Install();
-
-                        CurrentHooks.Add(PresentHook_12);
-
-                        PresentHook_12.PresentEvent += (swapChainPtr, syncInterval, flags) =>
-                        {
-
-                            return PresentHook_12.Present_orig(swapChainPtr, syncInterval, flags);
-                        };
-
-                        break;
-                    case RenderSpy.Graphics.GraphicsType.opengl:
-
-                        //Graphics.opengl.wglSwapBuffers glSwapBuffersHook = new Graphics.opengl.wglSwapBuffers();
-                        //glSwapBuffersHook.Install();
-                        //CurrentHook = glSwapBuffersHook;
-
-                        //glSwapBuffersHook.wglSwapBuffersEvent += (IntPtr hdc) =>
-                        //{
-
-
-                        //    return glSwapBuffersHook.wglSwapBuffers_orig(hdc); ;
-                        //};
-
-
-                        break;
-                    case RenderSpy.Graphics.GraphicsType.vulkan:
-
-
-                        break;
-                    default:
-
-
-                        break;
-                }
-
-                Results.IsAttached = (CurrentHooks.Count != 0);
+              
 
             }
             catch (Exception ex)
