@@ -41,7 +41,17 @@ If within your ImGui code you launch controls that block the Main UI, such as Op
 ### DX9 Overlay + Imgui Window.
 
 ```C
-  Overlay OverlayWindow = new Overlay() { EnableDrag = true, ResizableBorders = true,  Fix_WM_NCLBUTTONDBLCLK = true };
+  
+                Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, NoActiveWindow = true, ShowInTaskbar = true, AutoPresentParams = false };
+              
+                OverlayWindow.presentParams = new SharpDX.Direct3D9.PresentParameters()
+                {
+                    Windowed = true,
+                    SwapEffect = SharpDX.Direct3D9.SwapEffect.Discard,
+                    BackBufferFormat = SharpDX.Direct3D9.Format.A8R8G8B8,
+                    MultiSampleType = SharpDX.Direct3D9.MultisampleType.None,
+                    MultiSampleQuality = 0
+                };
 
  //SingleImguiWindow.ImGuiWindowFlagsEx = DearImguiSharp.ImGuiWindowFlags.NoTitleBar;
  OverlayWindow.OnImGuiReady += (object sender, bool Status) =>
