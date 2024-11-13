@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D4CAAFF9-E0F0-46C1-BB7F-5F9B90DBBD24}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>EasyImGui</RootNamespace>
-    <AssemblyName>EasyImGui</AssemblyName>
+    <ProjectGuid>{80183E23-D436-4D55-B5EF-48C3EE9C9C59}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TestApp</RootNamespace>
+    <AssemblyName>TestApp</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -21,8 +21,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>5</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,10 +32,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EasyImGui, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EasyImGui.1.0.8\lib\net48\EasyImGui.dll</HintPath>
+    </Reference>
     <Reference Include="Hexa.NET.ImGui, Version=1.91.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hexa.NET.ImGui.2.2.1\lib\netstandard2.0\Hexa.NET.ImGui.dll</HintPath>
     </Reference>
@@ -74,52 +73,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Runtimes.cs" />
-    <Compile Include="Core\Helpers.cs" />
-    <Compile Include="Core\ImguiManager.cs" />
-    <Compile Include="Core\OverrideHelper.cs" />
-    <Compile Include="Core\PInvoke\DynamicImport.cs" />
-    <Compile Include="Core\PInvoke\User32.cs" />
-    <Compile Include="Core\WindowBounds.cs" />
-    <Compile Include="Core\WindowHelper.cs" />
-    <Compile Include="Overlay.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Core\PInvoke\User32.Types.cs" />
     <None Include="packages.config" />
-    <None Include="runtimes\win-arm64\win-arm64_cimgui.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="runtimes\win-arm64\win-arm64_ImGuiImpl.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="runtimes\win-x64\win-x64_cimgui.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="runtimes\win-x64\win-x64_ImGuiImpl.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="runtimes\win-x86\win-x86_cimgui.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="runtimes\win-x86\win-x86_ImGuiImpl.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
