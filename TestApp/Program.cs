@@ -1,6 +1,7 @@
 ﻿
 using EasyImGui;
 using Hexa.NET.ImGui;
+using Hexa.NET.ImGui.Utilities;
 using RenderSpy.Globals;
 using System;
 using System.Drawing;
@@ -15,14 +16,19 @@ namespace TestApp
         {
             using (Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, ShowInTaskbar = false })
             {
+                ImFontPtr HaloFont = null;
+
                 OverlayWindow.ImguiManager.ConfigContex += delegate
                 {
                     // setup fonts.
-                    //ImGuiFontBuilder builder = new ImGuiFontBuilder();
-                    //builder
-                    //    .AddDefaultFont()
-                    //    .SetOption(config => { config.GlyphMinAdvanceX = 18; config.GlyphOffset = new Vector2(0, 4); })
-                    //    .AddFontFromFileTTF("assets/halo.ttf", 14, new uint[] { 0xE700, 0xF800 });
+                    if (System.IO.File.Exists("assets/halo.ttf"))
+                    {
+                        ImGuiFontBuilder builder = new ImGuiFontBuilder();
+                        builder.AddFontFromFileTTF("assets/halo.ttf", 12);
+                        HaloFont = builder.Build();
+
+                        Console.WriteLine("assets/halo.ttf Loaded!");
+                    }
 
 
                     var style = ImGui.GetStyle();
@@ -132,12 +138,15 @@ namespace TestApp
 
                         OverlayWindow.ImguiManager.Render += delegate
                         {
-                            DrawImguiMenu = true;
 
                             // your Imgui Logic Here...
-                            Hexa.NET.ImGui.ImGui.ShowDemoWindow(ref DrawImguiMenu);
-                            ImGui.Begin("Hello");
-                            ImGui.Text("Thank you for encouraging me to use EasyImgui");
+                            // DrawImguiMenu = true;
+                            // Hexa.NET.ImGui.ImGui.ShowDemoWindow(ref DrawImguiMenu);
+
+                            ImGui.Begin("Hello World");
+                            if (!HaloFont.IsNull) ImGui.PushFont(HaloFont);
+                            ImGui.Text("Thank you for using EasyImgui");
+                            if (!HaloFont.IsNull) ImGui.PopFont();
                             ImGui.End();
 
                             // Enables or disables interaction with the overlay. 
