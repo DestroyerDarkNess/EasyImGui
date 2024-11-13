@@ -44,7 +44,7 @@ packages/
 # Local application data
 *.local
 *.buildextensions
-.Nuget/
+Nuget/
 
 # Test Results
 TestResults
