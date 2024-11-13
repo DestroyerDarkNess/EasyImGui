@@ -17,6 +17,13 @@ namespace TestApp
             {
                 OverlayWindow.ImguiManager.ConfigContex += delegate
                 {
+                    // setup fonts.
+                    //ImGuiFontBuilder builder = new ImGuiFontBuilder();
+                    //builder
+                    //    .AddDefaultFont()
+                    //    .SetOption(config => { config.GlyphMinAdvanceX = 18; config.GlyphOffset = new Vector2(0, 4); })
+                    //    .AddFontFromFileTTF("assets/halo.ttf", 14, new uint[] { 0xE700, 0xF800 });
+
 
                     var style = ImGui.GetStyle();
                     var colors = style.Colors;
@@ -89,16 +96,16 @@ namespace TestApp
                     style.WindowBorderSize = 1;
                     style.ChildBorderSize = 1;
                     style.PopupBorderSize = 1;
-                    style.FrameBorderSize = 1;
                     style.TabBorderSize = 1;
-                    style.WindowRounding = 7;
                     style.ChildRounding = 4;
-                    style.FrameRounding = 3;
                     style.PopupRounding = 4;
                     style.ScrollbarRounding = 9;
                     style.GrabRounding = 3;
                     style.LogSliderDeadzone = 4;
                     style.TabRounding = 4;
+                    style.WindowRounding = 5.0f;
+                    style.FrameRounding = 5.0f;
+                    style.FrameBorderSize = 1.0f;
 
                     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
                     if ((OverlayWindow.ImguiManager.IO.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) != 0)
@@ -129,6 +136,9 @@ namespace TestApp
 
                             // your Imgui Logic Here...
                             Hexa.NET.ImGui.ImGui.ShowDemoWindow(ref DrawImguiMenu);
+                            ImGui.Begin("Hello");
+                            ImGui.Text("Thank you for encouraging me to use EasyImgui");
+                            ImGui.End();
 
                             // Enables or disables interaction with the overlay. 
                             OverlayWindow.Interactive(DrawImguiMenu);
