@@ -1,8 +1,10 @@
 ﻿using Hexa.NET.ImGui;
 using Hexa.NET.ImGui.Backends.D3D9;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace EasyImGui.Core
 {
@@ -162,6 +164,8 @@ namespace EasyImGui.Core
             return false;
         }
 
+        public Runtimes.Architecture Architecture { get; set; } = Runtimes.Architecture.None;
+
         public bool LoadBindings()
         {
             try
@@ -170,7 +174,7 @@ namespace EasyImGui.Core
                 string CimguiPath = Path.Combine(DropPath, "cimgui.dll");
                 string ImGuiImplPath = Path.Combine(DropPath, "ImGuiImpl.dll");
 
-                Runtimes ImguiRuntimes = Runtimes.Get();
+                Runtimes ImguiRuntimes = Runtimes.Get(Architecture);
 
                 if (ImguiRuntimes == null) return false;
 
@@ -180,15 +184,25 @@ namespace EasyImGui.Core
                     File.WriteAllBytes(CimguiPath, ImguiRuntimes.CimguiLib);
                     File.WriteAllBytes(ImGuiImplPath, ImguiRuntimes.ImGuiImplLib);
                 }
-                catch { }
+                catch (Exception ex) { Helpers.WriteException(ex); }
 
                 IntPtr cimgui_handle = RenderSpy.Globals.WinApi.LoadLibrary(CimguiPath);
 
-                if (cimgui_handle == IntPtr.Zero) return false;
+                if (cimgui_handle == IntPtr.Zero)
+                {
+                    int errorCode = Marshal.GetLastWin32Error();
+                    string errorMessage = new Win32Exception(errorCode).Message;
+                    throw new Exception($"Failed to load cimgui.dll: {errorMessage}");
+                }
 
                 IntPtr ImGuiImpl_handle = RenderSpy.Globals.WinApi.LoadLibrary(ImGuiImplPath);
 
-                if (ImGuiImpl_handle == IntPtr.Zero) return false;
+                if (ImGuiImpl_handle == IntPtr.Zero)
+                {
+                    int errorCode = Marshal.GetLastWin32Error();
+                    string errorMessage = new Win32Exception(errorCode).Message;
+                    throw new Exception($"Failed to load ImGuiImpl.dll: {errorMessage}");
+                }
 
                 return true;
             }
