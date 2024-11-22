@@ -199,9 +199,6 @@ namespace TestApp
 
                         SharpDX.Direct3D9.Device device = OverlayWindow.D3DDevice;
 
-                        var graphics = OverlayWindow.CreateGraphics();
-                        System.Drawing.Font font = new System.Drawing.Font("Arial", 12);
-
                         // For Normal Mode
                         //OverlayWindow.Keyboard += (key, isKeyDown) =>
                         //{
