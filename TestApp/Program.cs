@@ -1,10 +1,11 @@
 ﻿
 using EasyImGui;
 using Hexa.NET.ImGui;
-using Hexa.NET.ImGui.Utilities;
-using RenderSpy.Globals;
+using Hexa.NET.ImGui.Widgets;
+using SharpDX.Direct3D9;
 using System;
-using System.Drawing;
+using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 
@@ -12,24 +13,70 @@ namespace TestApp
 {
     internal class Program
     {
+
+        public enum OverlayMode
+        {
+            Normal = 0, // Normal mode, without the features of an overlay.
+            InGame = 1, // This mode is the classic overlay, totally external but when interacting with the imgui window the game will lose focus.
+            InGameEmbed = 2 // This mode requires a WndProc hook to the game process, and its behavior causes the game to not lose focus from the window.
+        }
+
+
+        private const int WS_EX_TOPMOST = 0x00000008;
+        private const int WS_EX_NOACTIVATE = 0x00080000;
+        private const int WS_EX_TOOLWINDOW = 0x00000080;
+
+        public static OverlayMode overlayMode = OverlayMode.InGameEmbed; // Use this to change the overlay mode
+
         static void Main(string[] args)
         {
+            Process GameProc = Process.GetProcessesByName("hl").FirstOrDefault(); //InGameEmbed Tested on Counter Striker 1.6, Battlefield 4, notepad XD.
+
+            if (GameProc == null && (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed))
+            {
+                System.Windows.Forms.MessageBox.Show("Game not running.");
+                return;
+            }
+
             using (Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, ShowInTaskbar = false })
             {
+
+                OverlayWindow.PresentParams = new SharpDX.Direct3D9.PresentParameters
+                {
+                    Windowed = true,
+                    SwapEffect = SharpDX.Direct3D9.SwapEffect.Discard,
+                    BackBufferFormat = SharpDX.Direct3D9.Format.A8R8G8B8,
+                    PresentationInterval = PresentInterval.Immediate,
+                    EnableAutoDepthStencil = false,
+                    MultiSampleType = SharpDX.Direct3D9.MultisampleType.None,
+                    MultiSampleQuality = 0
+                };
+
+                if (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed)
+                {
+                    OverlayWindow.Opacity = 0.8;
+                    OverlayWindow.NoActivateWindow = true;
+                    OverlayWindow.AdditionalExStyle |= WS_EX_TOPMOST | WS_EX_NOACTIVATE | WS_EX_TOOLWINDOW;
+                    OverlayWindow.Text = GameProc.MainWindowTitle;
+                    OverlayWindow.GameWindowHandle = GameProc.MainWindowHandle;
+                }
+
                 ImFontPtr HaloFont = null;
+                WidgetDemo widgetDemo = null;
+                bool UseCustomImguiCursor = true;
+                InputImguiEmu inputEmulation = null;
 
                 OverlayWindow.ImguiManager.ConfigContex += delegate
                 {
                     // setup fonts.
-                    if (System.IO.File.Exists("assets/halo.ttf"))
-                    {
-                        ImGuiFontBuilder builder = new ImGuiFontBuilder();
-                        builder.AddFontFromFileTTF("assets/halo.ttf", 12);
-                        HaloFont = builder.Build();
+                    //if (System.IO.File.Exists("assets/halo.ttf"))
+                    //{
+                    //    ImGuiFontBuilder builder = new ImGuiFontBuilder();
+                    //    builder.AddFontFromFileTTF("assets/halo.ttf", 12);
+                    //    HaloFont = builder.Build();
 
-                        Console.WriteLine("assets/halo.ttf Loaded!");
-                    }
-
+                    //    Console.WriteLine("assets/halo.ttf Loaded!");
+                    //}
 
                     var style = ImGui.GetStyle();
                     var colors = style.Colors;
@@ -109,9 +156,9 @@ namespace TestApp
                     style.GrabRounding = 3;
                     style.LogSliderDeadzone = 4;
                     style.TabRounding = 4;
-                    style.WindowRounding = 5.0f;
-                    style.FrameRounding = 5.0f;
-                    style.FrameBorderSize = 1.0f;
+                    //style.WindowRounding = 5.0f;
+                    //style.FrameRounding = 5.0f;
+                    //style.FrameBorderSize = 1.0f;
 
                     // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
                     if ((OverlayWindow.ImguiManager.IO.ConfigFlags & ImGuiConfigFlags.ViewportsEnable) != 0)
@@ -120,13 +167,29 @@ namespace TestApp
                         style.Colors[(int)ImGuiCol.WindowBg].W = 1.0f;
                     }
 
-                    //OverlayWindow.ImguiManager.IO.ConfigFlags &= ~Hexa.NET.ImGui.ImGuiConfigFlags.ViewportsEnable;
+                    //SET Overlay Location and Size
+                    //OverlayWindow.Location = new System.Drawing.Point(0, 0);
+                    //OverlayWindow.Size = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
 
-                    OverlayWindow.Size = new Size(800, 600);
+                    if (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed)
+                    {
+                        OverlayWindow.ImguiManager.IO.ConfigFlags &= ~Hexa.NET.ImGui.ImGuiConfigFlags.ViewportsEnable;
+                        if (UseCustomImguiCursor) OverlayWindow.ImguiManager.IO.ConfigFlags &= ~ImGuiConfigFlags.NoMouseCursorChange;
+                    }
+
+                    widgetDemo = new WidgetDemo();
+                    //ImGuiGC.Init(); ???
+
+                    // Disable Debug Mode
+                    OverlayWindow.ImguiManager.IO.ConfigDebugIsDebuggerPresent = false;
+                    OverlayWindow.ImguiManager.IO.ConfigErrorRecoveryEnableAssert = false;
+
+                    inputEmulation = new InputImguiEmu(OverlayWindow.ImguiManager.IO);
 
                     return true;
                 };
 
+                bool SetChildWindow = false;
                 OverlayWindow.OnImGuiReady += (object sender, bool Status) =>
                 {
                     if (Status)
@@ -136,18 +199,83 @@ namespace TestApp
 
                         SharpDX.Direct3D9.Device device = OverlayWindow.D3DDevice;
 
+                        var graphics = OverlayWindow.CreateGraphics();
+                        System.Drawing.Font font = new System.Drawing.Font("Arial", 12);
+
+                        // For Normal Mode
+                        //OverlayWindow.Keyboard += (key, isKeyDown) =>
+                        //{
+                        //    if (key == Keys.Insert && isKeyDown)
+                        //    {
+                        //        DrawImguiMenu = !DrawImguiMenu;
+                        //    }
+                        //};
+
+
+                        DateTime lastToggleTime = DateTime.MinValue;
+                        bool isInsertKeyDown = false;
+                        bool wasInsertKeyDown = false;
+
                         OverlayWindow.ImguiManager.Render += delegate
                         {
+                            if ((overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed) && GameProc.HasExited) Environment.Exit(0);
+
+                            if (overlayMode == OverlayMode.InGameEmbed && !SetChildWindow)
+                            {
+                                SetChildWindow = true;
+                                OverlayWindow.MakeOverlayChild(OverlayWindow.Handle, OverlayWindow.GameWindowHandle);
+                            }
+
+                            if (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed)
+                            {
+                                OverlayWindow.Location = new System.Drawing.Point(0, 0);
+                                OverlayWindow.FitTo(GameProc.MainWindowHandle, true);
+                                OverlayWindow.PlaceAbove(GameProc.MainWindowHandle);
+                            }
+
+                            if (overlayMode == OverlayMode.InGameEmbed && UseCustomImguiCursor)
+                            {
+                                OverlayWindow.ImguiManager.IO.MouseDrawCursor = DrawImguiMenu;
+                            }
+
+                            if (overlayMode == OverlayMode.InGameEmbed && inputEmulation != null)
+                            {
+                                OverlayWindow.ImguiManager.IO.MouseDrawCursor = DrawImguiMenu;
+                                inputEmulation.UpdateMouseState();
+                                inputEmulation.UpdateKeyboardState();
+                            }
+
+
+                            isInsertKeyDown = inputEmulation.IsKeyDown(Keys.Insert);
+
+                            if (isInsertKeyDown && !wasInsertKeyDown && (DateTime.Now - lastToggleTime).TotalMilliseconds > 100)
+                            {
+                                DrawImguiMenu = !DrawImguiMenu;
+                                lastToggleTime = DateTime.Now;
+                            }
+
+                            wasInsertKeyDown = isInsertKeyDown;
 
                             // your Imgui Logic Here...
                             // DrawImguiMenu = true;
                             // Hexa.NET.ImGui.ImGui.ShowDemoWindow(ref DrawImguiMenu);
 
-                            ImGui.Begin("Hello World");
-                            if (!HaloFont.IsNull) ImGui.PushFont(HaloFont);
-                            ImGui.Text("Thank you for using EasyImgui");
-                            if (!HaloFont.IsNull) ImGui.PopFont();
-                            ImGui.End();
+                            if (DrawImguiMenu)
+                            {
+                                WidgetManager.Draw();
+
+                                ImGui.Begin("Hello World", ref DrawImguiMenu);
+
+                                //if (!HaloFont.IsNull) ImGui.PushFont(HaloFont);
+
+                                ImGui.Text("Thank you for using EasyImgui");
+
+                                //if (!HaloFont.IsNull) ImGui.PopFont();
+
+                                widgetDemo.DrawContent();
+
+                                ImGui.End();
+                            }
 
                             // Enables or disables interaction with the overlay. 
                             OverlayWindow.Interactive(DrawImguiMenu);
@@ -163,30 +291,11 @@ namespace TestApp
                     }
                 };
 
-                try { Application.Run(OverlayWindow); } catch (Exception Ex) { MessageBox.Show(Ex.Message); Environment.Exit(0); }
+                try { Application.Run(OverlayWindow); } catch (Exception Ex) { System.Windows.Forms.MessageBox.Show(Ex.Message); Environment.Exit(0); }
             }
 
         }
 
-        public static bool Universal(Hexa.NET.ImGui.ImGuiIOPtr IO)
-        {
-            try
-            {
 
-                int LButton = WinApi.GetAsyncKeyState(Keys.LButton); IO.MouseDown[0] = (LButton != 0);
-
-                int RButton = WinApi.GetAsyncKeyState(Keys.RButton); IO.MouseDown[1] = (RButton != 0);
-
-                int MButton = WinApi.GetAsyncKeyState(Keys.MButton); IO.MouseDown[2] = (MButton != 0);
-
-                int XButton1 = WinApi.GetAsyncKeyState(Keys.XButton1); IO.MouseDown[3] = (XButton1 != 0);
-
-                int XButton2 = WinApi.GetAsyncKeyState(Keys.XButton2); IO.MouseDown[4] = (XButton2 != 0);
-
-                return true;
-
-            }
-            catch (Exception Ex) { Console.WriteLine(Ex.Message); return false; }
-        }
     }
 }

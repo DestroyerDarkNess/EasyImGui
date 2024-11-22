@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace EasyImGui.Core.PInvoke
 {
-    internal static class DynamicImport
+    public static class DynamicImport
     {
         [DllImport("kernel32.dll", EntryPoint = "GetProcAddress", SetLastError = true, CharSet = CharSet.Ansi)]
         private static extern IntPtr GetProcAddress(IntPtr hModule, string procname);

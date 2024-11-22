@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace EasyImGui.Core.PInvoke
 {
-    internal static class User32
+    public static class User32
     {
         public static readonly IntPtr HwndBroadcast = (IntPtr)0xffff;
         public static readonly IntPtr HwndInsertNoTopmost = (IntPtr)(-2);

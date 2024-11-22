@@ -38,32 +38,32 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hexa.NET.ImGui, Version=1.91.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hexa.NET.ImGui.2.2.1\lib\netstandard2.0\Hexa.NET.ImGui.dll</HintPath>
+      <HintPath>..\packages\Hexa.NET.ImGui.2.2.2\lib\netstandard2.0\Hexa.NET.ImGui.dll</HintPath>
     </Reference>
-    <Reference Include="Hexa.NET.ImGui.Backends, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hexa.NET.ImGui.Backends.1.0.9\lib\netstandard2.0\Hexa.NET.ImGui.Backends.dll</HintPath>
+    <Reference Include="Hexa.NET.ImGui.Backends, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hexa.NET.ImGui.Backends.1.0.10\lib\netstandard2.0\Hexa.NET.ImGui.Backends.dll</HintPath>
     </Reference>
     <Reference Include="HexaGen.Runtime, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\HexaGen.Runtime.1.1.13\lib\net472\HexaGen.Runtime.dll</HintPath>
+      <HintPath>..\packages\HexaGen.Runtime.1.1.16\lib\net472\HexaGen.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="RenderSpy, Version=1.7.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RenderSpy.1.7.5\lib\net46\RenderSpy.dll</HintPath>
+    <Reference Include="RenderSpy, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RenderSpy.1.7.6\lib\net46\RenderSpy.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.0\lib\net462\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.0\lib\net462\System.Numerics.Vectors.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.0\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -74,6 +74,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\PInvoke\DwmApi.cs" />
+    <Compile Include="Core\PInvoke\DwmApi.Types.cs" />
+    <Compile Include="Core\PInvoke\Undocumented.cs" />
+    <Compile Include="Core\PInvoke\Undocumented.Types.cs" />
     <Compile Include="Core\Runtimes.cs" />
     <Compile Include="Core\Helpers.cs" />
     <Compile Include="Core\ImguiManager.cs" />

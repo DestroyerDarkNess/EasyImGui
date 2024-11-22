@@ -3,6 +3,7 @@ using EasyImGui.Core.PInvoke;
 using RenderSpy.Overlay;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace EasyImGui
@@ -42,22 +43,78 @@ namespace EasyImGui
             }
         }
 
+        #region " WndProc "
+
+        public delegate void KeyboardEventHandler(Keys key, bool isKeyDown);
+        public event KeyboardEventHandler Keyboard = null;
+
+        private const int WM_KEYDOWN = 0x0100;
+        private const int WM_KEYUP = 0x0101;
+        private const int WM_MOUSEACTIVATE = 0x0021;
+        private const int WM_SETFOCUS = 0x0007;
+        private const int WM_ACTIVATE = 0x0006;
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        public IntPtr GameWindowHandle = IntPtr.Zero;
+
         protected override void WndProc(ref System.Windows.Forms.Message message)
         {
+
+            if (GameWindowHandle != IntPtr.Zero)
+            {
+                switch (message.Msg)
+                {
+                    case WM_KEYDOWN:
+                        Keyboard?.Invoke((Keys)message.WParam, true);
+                        break;
+
+                    case WM_KEYUP:
+                        Keyboard?.Invoke((Keys)message.WParam, false);
+                        break;
+
+                    case WM_MOUSEACTIVATE:
+                        message.Result = (IntPtr)3; // MA_NOACTIVATE
+                        return;
+
+                    case WM_SETFOCUS:
+                        return;
+
+                    case WM_ACTIVATE:
+                        SetForegroundWindow(GameWindowHandle);
+                        return;
+                }
+            }
+
             if (ImguiManager.Imgui_Alive)
             {
                 try
                 {
                     unsafe
                     {
-                        Hexa.NET.ImGui.Backends.Win32.ImGuiImplWin32.WndProcHandler(message.HWnd, (uint)message.Msg, new UIntPtr(message.WParam.ToPointer()), message.LParam);
+                        Hexa.NET.ImGui.Backends.Win32.ImGuiImplWin32.WndProcHandler(
+                            message.HWnd,
+                            (uint)message.Msg,
+                            new UIntPtr(message.WParam.ToPointer()),
+                            message.LParam
+                        );
                     }
                 }
-                catch (Exception Ex) { Helpers.WriteException(Ex); return; }
+                catch (Exception ex)
+                {
+                    Helpers.WriteException(ex);
+                }
             }
 
-            try { base.WndProc(ref message); } catch { }
+            try { base.WndProc(ref message); } catch (Exception ex) { Helpers.WriteException(ex); }
+
         }
+
+        #endregion
 
         #region " Methods "
 
@@ -109,27 +166,25 @@ namespace EasyImGui
             }
         }
 
-        private const int WS_EX_TOPMOST = 0x8;
-        private const int WS_EX_NOACTIVATE = 0x8000000;
-        private const int WS_EX_TOOLWINDOW = 0x80;
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TRANSPARENT = 0x00000020;
 
         public void Interactive(bool status)
         {
             IntPtr hwnd = this.Handle;
+
             int extendedStyle = (int)RenderSpy.Globals.WinApi.GetWindowLongPtr(hwnd, GWL_EXSTYLE);
 
             if (status)
             {
-                RenderSpy.Globals.WinApi.SetWindowLongPtr(hwnd, GWL_EXSTYLE, (IntPtr)(extendedStyle & ~(WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE | WS_EX_TOPMOST)));
+                RenderSpy.Globals.WinApi.SetWindowLongPtr(hwnd, GWL_EXSTYLE, (IntPtr)(extendedStyle & ~WS_EX_TRANSPARENT));
             }
             else
             {
-                RenderSpy.Globals.WinApi.SetWindowLongPtr(hwnd, GWL_EXSTYLE, (IntPtr)(extendedStyle | WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE | WS_EX_TOPMOST));
+                RenderSpy.Globals.WinApi.SetWindowLongPtr(hwnd, GWL_EXSTYLE, (IntPtr)(extendedStyle | WS_EX_TRANSPARENT));
             }
-
         }
+
 
         #endregion
 

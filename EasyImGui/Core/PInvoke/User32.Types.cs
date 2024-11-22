@@ -5,9 +5,9 @@ namespace EasyImGui.Core.PInvoke
 {
 
     // An application-defined function that processes messages sent to a window.
-    internal delegate IntPtr WindowProc(IntPtr hWnd, WindowMessage msg, IntPtr wParam, IntPtr lParam);
+    public delegate IntPtr WindowProc(IntPtr hWnd, WindowMessage msg, IntPtr wParam, IntPtr lParam);
 
-    internal enum WindowClassStyle : uint
+    public enum WindowClassStyle : uint
     {
         None = 0,
         VerticalReDraw = 0x0001,
@@ -24,7 +24,7 @@ namespace EasyImGui.Core.PInvoke
         DropShadow = 0x00020000
     }
 
-    internal enum WindowCommand : uint
+    public enum WindowCommand : uint
     {
         First,
         Last,
@@ -36,7 +36,7 @@ namespace EasyImGui.Core.PInvoke
     }
 
     // Identifies the dots per inch (dpi) setting for a thread, process, or window.
-    internal enum DpiAwareness
+    public enum DpiAwareness
     {
         Invalid,
         Unaware,
@@ -45,7 +45,7 @@ namespace EasyImGui.Core.PInvoke
     }
 
     // Identifies the awareness context for a window.
-    internal enum DpiAwarenessContext
+    public enum DpiAwarenessContext
     {
         UnawareGdiScaled = -5,
         PerMonitorAwareV2 = -4,
@@ -56,7 +56,7 @@ namespace EasyImGui.Core.PInvoke
 
     // Extended Window Styles
     [Flags]
-    internal enum ExtendedWindowStyle : uint
+    public enum ExtendedWindowStyle : uint
     {
         Visible = 268435456,
         Left = 0x00000000,
@@ -89,7 +89,7 @@ namespace EasyImGui.Core.PInvoke
     }
 
     // Layered Window Attributes
-    internal enum LayeredWindowAttributes : uint
+    public enum LayeredWindowAttributes : uint
     {
         None = 0x0,
         ColorKey = 0x1,
@@ -98,7 +98,7 @@ namespace EasyImGui.Core.PInvoke
     }
 
     // Controls how the window is to be shown.
-    internal enum ShowWindowCommand : uint
+    public enum ShowWindowCommand : uint
     {
         Hide = 0,
         ShowNormal = 1,
@@ -117,7 +117,7 @@ namespace EasyImGui.Core.PInvoke
 
     // SetWindowPos flags
     [Flags]
-    internal enum SwpFlags : uint
+    public enum SwpFlags : uint
     {
         None = 0,
         NoSize = 0x0001,
@@ -139,7 +139,7 @@ namespace EasyImGui.Core.PInvoke
 
     // Window Styles
     [Flags]
-    internal enum WindowStyle : uint
+    public enum WindowStyle : uint
     {
         Overlapped = 0x00000000,
         Tiled = 0x00000000,
@@ -171,7 +171,7 @@ namespace EasyImGui.Core.PInvoke
     }
 
     // All WindowMessages
-    internal enum WindowMessage : uint
+    public enum WindowMessage : uint
     {
         Null = 0x0000,
         Create = 0x0001,
@@ -406,7 +406,7 @@ namespace EasyImGui.Core.PInvoke
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct WindowInfo
+    public struct WindowInfo
     {
         public static readonly uint MemorySize = (uint)Marshal.SizeOf(typeof(WindowInfo));
 
@@ -424,7 +424,7 @@ namespace EasyImGui.Core.PInvoke
 
     // Contains a WindowsMessage
     [StructLayout(LayoutKind.Sequential)]
-    internal struct Message
+    public struct Message
     {
         public IntPtr Hwnd;
         public WindowMessage Msg;
@@ -437,7 +437,7 @@ namespace EasyImGui.Core.PInvoke
 
     // X and Y desktop coordinates
     [StructLayout(LayoutKind.Sequential)]
-    internal struct NativePoint
+    public struct NativePoint
     {
         public int X;
         public int Y;
@@ -445,7 +445,7 @@ namespace EasyImGui.Core.PInvoke
 
     // Contains Desktop Coordinates
     [StructLayout(LayoutKind.Sequential)]
-    internal struct NativeRect
+    public struct NativeRect
     {
         public int Left; // x position of upper-left corner
 
@@ -458,7 +458,7 @@ namespace EasyImGui.Core.PInvoke
 
     // Stores information for window creation
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    internal struct WindowClassEx
+    public struct WindowClassEx
     {
         public static readonly uint MemorySize = (uint)Marshal.SizeOf(typeof(WindowClassEx));
 
