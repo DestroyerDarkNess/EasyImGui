@@ -24,7 +24,6 @@ ipch/
 *.obj
 *.exp
 *.lib
-*.resx
 *.tlh
 *.tli
 *.VC.db
