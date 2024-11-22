@@ -26,7 +26,7 @@ namespace TestApp
         private const int WS_EX_NOACTIVATE = 0x00080000;
         private const int WS_EX_TOOLWINDOW = 0x00000080;
 
-        public static OverlayMode overlayMode = OverlayMode.InGameEmbed; // Use this to change the overlay mode
+        public static OverlayMode overlayMode = OverlayMode.Normal; // Use this to change the overlay mode
 
         static void Main(string[] args)
         {
