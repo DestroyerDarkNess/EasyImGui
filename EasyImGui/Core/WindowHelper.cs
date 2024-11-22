@@ -1,6 +1,8 @@
 ﻿using EasyImGui.Core.PInvoke;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace EasyImGui.Core
 {
@@ -105,6 +107,58 @@ namespace EasyImGui.Core
             return string.IsNullOrEmpty(className)
                 ? User32.FindWindowEx(IntPtr.Zero, IntPtr.Zero, null, title)
                 : User32.FindWindowEx(IntPtr.Zero, IntPtr.Zero, className, title);
+        }
+
+        /// <summary>
+		/// Extends a windows frame into the client area of the window.
+		/// </summary>
+		/// <param name="hwnd">A IntPtr representing the handle of a window.</param>
+		public static void ExtendFrameIntoClientArea(IntPtr hwnd)
+        {
+            var margin = new NativeMargin
+            {
+                cxLeftWidth = -1,
+                cxRightWidth = -1,
+                cyBottomHeight = -1,
+                cyTopHeight = -1
+            };
+
+            DwmApi.DwmExtendFrameIntoClientArea(hwnd, ref margin);
+        }
+
+        private static readonly Lazy<IntPtr> _accentPolicyBuffer = new Lazy<IntPtr>(() =>
+        {
+            var buffer = Marshal.AllocHGlobal((int)AccentPolicy.MemorySize);
+
+            var policy = new AccentPolicy()
+            {
+                AccentFlags = 2,
+                AccentState = AccentState.EnableBlurBehind,
+                AnimationId = 0,
+                GradientColor = 0
+            };
+
+            Marshal.StructureToPtr(policy, buffer, true);
+
+            return buffer;
+        }, LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Enables the blur effect for a window and makes it translucent.
+        /// </summary>
+        /// <param name="hwnd">A valid handle to a window. The desktop window is not supported.</param>
+        public static void EnableBlurBehind(IntPtr hwnd)
+        {
+            if (hwnd == IntPtr.Zero) return;
+
+            var data = new WindowCompositionAttributeData()
+            {
+                Attribute = (uint)WindowCompositionAttribute.AccentPolicy,
+                Data = _accentPolicyBuffer.Value,
+                DataSize = AccentPolicy.MemorySize
+            };
+
+            Undocumented.SetWindowCompositionAttribute(hwnd, ref data);
         }
 
         /// <summary>
