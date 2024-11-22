@@ -164,6 +164,8 @@ namespace EasyImGui.Core
             return false;
         }
 
+        public Runtimes.Architecture Architecture { get; set; } = Runtimes.Architecture.None;
+
         public bool LoadBindings()
         {
             try
@@ -172,7 +174,7 @@ namespace EasyImGui.Core
                 string CimguiPath = Path.Combine(DropPath, "cimgui.dll");
                 string ImGuiImplPath = Path.Combine(DropPath, "ImGuiImpl.dll");
 
-                Runtimes ImguiRuntimes = Runtimes.Get();
+                Runtimes ImguiRuntimes = Runtimes.Get(Architecture);
 
                 if (ImguiRuntimes == null) return false;
 

@@ -5,13 +5,23 @@ namespace EasyImGui.Core
 {
     public class Runtimes
     {
+        public enum Architecture
+        {
+            None,
+            X86,
+            X64,
+            ARM
+        }
+
         public byte[] CimguiLib { get; set; }
         public byte[] ImGuiImplLib { get; set; }
-        public static Runtimes Get()
+        public static Runtimes Get(Architecture architecture = Architecture.None)
         {
             try
             {
-                if (IsWindowsArm())
+                if (architecture == Architecture.None) { architecture = GetArchitecture(); }
+
+                if (architecture == Architecture.ARM)
                 {
                     return new Runtimes
                     {
@@ -19,7 +29,7 @@ namespace EasyImGui.Core
                         ImGuiImplLib = Resources.win_arm64_ImGuiImpl
                     };
                 }
-                return Environment.Is64BitProcess
+                return architecture == Architecture.X64
                     ? new Runtimes
                     {
                         CimguiLib = Resources.win_x64_cimgui,
@@ -40,6 +50,14 @@ namespace EasyImGui.Core
                 };
             }
         }
+
+        private static Architecture GetArchitecture()
+        {
+            if (IsWindowsArm()) { return Architecture.ARM; }
+            if (Environment.Is64BitProcess) { return Architecture.X64; }
+            return Architecture.X86;
+        }
+
         private static bool IsWindowsArm()
         {
             var value = Registry.GetValue("HKEY_LOCAL_MACHINE\\\\SYSTEM\\\\CurrentControlSet\\\\Control\\\\Session Manager\\\\Environment", "PROCESSOR_ARCHITECTURE", null);
