@@ -288,7 +288,8 @@ namespace TestApp
 
                             // your Imgui Logic Here...
                             // DrawImguiMenu = true;
-                            // Hexa.NET.ImGui.ImGui.ShowDemoWindow(ref DrawImguiMenu);
+
+                            Hexa.NET.ImGui.ImGui.ShowDemoWindow();
 
                             if (DrawImguiMenu)
                             {
