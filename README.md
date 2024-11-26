@@ -4,7 +4,7 @@
 
 **EasyImgui** is a library that allows you to integrate [ImGui](https://github.com/ocornut/imgui), a popular immediate mode graphical user interface, with WinForms applications using the .NET Framework. It provides an overlay that renders over DirectX 9 (DX9), enabling developers to create rich, interactive GUIs for their applications with ease.
 
-![image](https://github.com/user-attachments/assets/bf604c4c-0611-42ae-8f09-993f59a55c26)
+![{4EE41353-4973-4B5A-ABF9-B6F4EC06A7CB}](https://github.com/user-attachments/assets/d3be3420-551e-4de4-ac21-2011ba565015)
 
 
 ---
