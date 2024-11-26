@@ -1,5 +1,6 @@
 ﻿
 using EasyImGui;
+using EasyImGui.Core;
 using Hexa.NET.ImGui;
 using Hexa.NET.ImGui.Widgets;
 using SharpDX.Direct3D9;
@@ -30,6 +31,18 @@ namespace TestApp
 
         static void Main(string[] args)
         {
+            bool result = Diagnostic.RunDiagnostic();
+
+            if (result)
+            {
+                Console.WriteLine("All diagnostics passed. The system is ready.");
+            }
+            else
+            {
+                Console.WriteLine("Some diagnostics failed. Please resolve the missing libraries, Press any key to continue.");
+                Console.ReadKey();
+            }
+
             Process GameProc = Process.GetProcessesByName("hl").FirstOrDefault(); //InGameEmbed Tested on Counter Striker 1.6, Battlefield 4, notepad XD.
 
             if (GameProc == null && (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed))
@@ -38,19 +51,34 @@ namespace TestApp
                 return;
             }
 
-            using (Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, ShowInTaskbar = false })
+            bool UseCustomD3dDevice = true;
+
+            using (Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, ShowInTaskbar = false, AutoInitialize = !UseCustomD3dDevice })
             {
+
+                OverlayWindow.ImguiManager.Architecture = Runtimes.Architecture.Auto;
 
                 OverlayWindow.PresentParams = new SharpDX.Direct3D9.PresentParameters
                 {
                     Windowed = true,
                     SwapEffect = SharpDX.Direct3D9.SwapEffect.Discard,
-                    BackBufferFormat = SharpDX.Direct3D9.Format.A8R8G8B8,
+                    BackBufferFormat = Format.X8R8G8B8,
                     PresentationInterval = PresentInterval.Immediate,
                     EnableAutoDepthStencil = false,
+                    AutoDepthStencilFormat = Format.Unknown,
                     MultiSampleType = SharpDX.Direct3D9.MultisampleType.None,
                     MultiSampleQuality = 0
                 };
+
+                // Using Custom D3D Device
+                if (UseCustomD3dDevice)
+                {
+                    OverlayWindow.Load += (sender, e) =>
+                    {
+                        OverlayWindow.D3DDevice = new DeviceEx(new Direct3DEx(), 0, DeviceType.Hardware, OverlayWindow.Handle, CreateFlags.HardwareVertexProcessing | CreateFlags.Multithreaded, OverlayWindow.PresentParams);
+                        OverlayWindow.InitializeD3D();
+                    };
+                }
 
                 if (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed)
                 {
@@ -167,14 +195,19 @@ namespace TestApp
                         style.Colors[(int)ImGuiCol.WindowBg].W = 1.0f;
                     }
 
-                    //SET Overlay Location and Size
-                    //OverlayWindow.Location = new System.Drawing.Point(0, 0);
-                    //OverlayWindow.Size = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
+
 
                     if (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed)
                     {
                         OverlayWindow.ImguiManager.IO.ConfigFlags &= ~Hexa.NET.ImGui.ImGuiConfigFlags.ViewportsEnable;
                         if (UseCustomImguiCursor) OverlayWindow.ImguiManager.IO.ConfigFlags &= ~ImGuiConfigFlags.NoMouseCursorChange;
+                    }
+
+                    if (overlayMode == OverlayMode.Normal)
+                    {
+                        //SET Overlay Location and Size
+                        OverlayWindow.Location = new System.Drawing.Point(0, 0);
+                        OverlayWindow.Size = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
                     }
 
                     widgetDemo = new WidgetDemo();

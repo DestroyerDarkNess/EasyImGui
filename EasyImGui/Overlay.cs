@@ -191,8 +191,8 @@ namespace EasyImGui
         #region IDisposable implementation with finalizer
 
         private bool isDisposed = false;
-        public void Dispose() { Dispose(true); GC.SuppressFinalize(this); }
-        protected virtual void Dispose(bool disposing)
+
+        protected override void Dispose(bool disposing)
         {
             if (!isDisposed)
             {
@@ -200,11 +200,16 @@ namespace EasyImGui
                 {
                     ImguiManager.Dispose();
                 }
+
             }
+
             isDisposed = true;
+
+            base.Dispose(disposing);
         }
 
         #endregion
+
 
     }
 }
