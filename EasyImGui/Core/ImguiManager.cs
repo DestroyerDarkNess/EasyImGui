@@ -35,7 +35,16 @@ namespace EasyImGui.Core
 
         #endregion
 
-        public ImguiManager() { }
+        string DropPath = string.Empty;
+        string CimguiPath = string.Empty;
+        string ImGuiImplPath = string.Empty;
+
+        public ImguiManager()
+        {
+            DropPath = Path.Combine(Path.GetTempPath(), Process.GetCurrentProcess().ProcessName + "_" + Process.GetCurrentProcess().Id);
+            CimguiPath = Path.Combine(DropPath, "cimgui.dll");
+            ImGuiImplPath = Path.Combine(DropPath, "ImGuiImpl.dll");
+        }
 
         public bool Initialize(IntPtr WindowTargetHandle)
         {
@@ -164,16 +173,12 @@ namespace EasyImGui.Core
             return false;
         }
 
-        public Runtimes.Architecture Architecture { get; set; } = Runtimes.Architecture.None;
+        public Runtimes.Architecture Architecture { get; set; } = Runtimes.Architecture.Auto;
 
         public bool LoadBindings()
         {
             try
             {
-                string DropPath = Path.Combine(Path.GetTempPath(), Process.GetCurrentProcess().ProcessName + "_" + Process.GetCurrentProcess().Id);
-                string CimguiPath = Path.Combine(DropPath, "cimgui.dll");
-                string ImGuiImplPath = Path.Combine(DropPath, "ImGuiImpl.dll");
-
                 Runtimes ImguiRuntimes = Runtimes.Get(Architecture);
 
                 if (ImguiRuntimes == null) return false;
@@ -229,6 +234,31 @@ namespace EasyImGui.Core
                     Hexa.NET.ImGui.Backends.D3D9.ImGuiImplD3D9.Shutdown();
                     Hexa.NET.ImGui.Backends.Win32.ImGuiImplWin32.Shutdown();
                     Hexa.NET.ImGui.ImGui.DestroyContext(Context);
+
+                    try
+                    {
+                        IntPtr cimguiHandle = RenderSpy.Globals.WinApi.GetModuleHandle(Path.GetFileName(CimguiPath));
+                        if (cimguiHandle == IntPtr.Zero && !RenderSpy.Globals.WinApi.FreeLibrary(cimguiHandle))
+                        {
+                            int errorCode = Marshal.GetLastWin32Error();
+                            Console.WriteLine($"Failed to unload cimgui.dll: {new Win32Exception(errorCode).Message}");
+                        }
+
+                        IntPtr imguiImplHandle = RenderSpy.Globals.WinApi.GetModuleHandle(Path.GetFileName(ImGuiImplPath));
+                        if (imguiImplHandle == IntPtr.Zero && !RenderSpy.Globals.WinApi.FreeLibrary(imguiImplHandle))
+                        {
+                            int errorCode = Marshal.GetLastWin32Error();
+                            Console.WriteLine($"Failed to unload ImGuiImpl.dll: {new Win32Exception(errorCode).Message}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error unloading DLLs: {ex.Message}");
+                    }
+
+                    if (File.Exists(CimguiPath)) try { File.Delete(CimguiPath); } catch { }
+
+                    if (File.Exists(ImGuiImplPath)) try { File.Delete(ImGuiImplPath); } catch { }
                 }
             }
             isDisposed = true;

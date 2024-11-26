@@ -7,19 +7,19 @@ namespace EasyImGui.Core
     {
         public enum Architecture
         {
-            None,
-            X86,
-            X64,
-            ARM
+            Auto = 0,
+            X86 = 1,
+            X64 = 2,
+            ARM = 3
         }
 
         public byte[] CimguiLib { get; set; }
         public byte[] ImGuiImplLib { get; set; }
-        public static Runtimes Get(Architecture architecture = Architecture.None)
+        public static Runtimes Get(Architecture architecture = Architecture.Auto)
         {
             try
             {
-                if (architecture == Architecture.None) { architecture = GetArchitecture(); }
+                if (architecture == Architecture.Auto) { architecture = GetArchitecture(); }
 
                 if (architecture == Architecture.ARM)
                 {
