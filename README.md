@@ -8,34 +8,23 @@
 
 ![{E59BADD4-BFA8-48B4-B9F2-29C1E15262AF}](https://github.com/user-attachments/assets/0eb383b7-511c-463c-872e-ce50324a3f42)
 
----
-
 ## Table of Contents
 
 1. [Features](#features)
 2. [Installation](#installation)
-3. [Getting Started](#getting-started)
-4. [Class Overview](#class-overview)
-   - [Overlay](#overlay-class)
-   - [D3D9Window](#d3d9window-class)
-   - [ImguiManager](#imguimanager-class)
-5. [Example Usage](#example-usage)
-6. [Conclusion](#conclusion)
-
----
+3. [Example Usage](#example-usage)
+4. [Conclusion](#conclusion)
 
 ## Features
 
 - **Easy Integration**: Seamlessly integrate ImGui with WinForms applications.
 - **Interactive Overlays**: Supports interactive overlays that can be toggled between interactive and non-interactive states.
 
----
-
 ## Installation
 
 ### Option 1: Install via NuGet Package Manager
 
-1. **Create a .NET Framework 4.8 Project**: Open Visual Studio and create a new WinForms application targeting .NET Framework 4.8.
+1. **Create a .NET Framework 4.8 Project**: Open Visual Studio and create a new Console application targeting .NET Framework 4.8.
 
 2. **Install EasyImgui via NuGet**:
 
@@ -81,204 +70,84 @@
 
 4. **Build the Project**:
 
-   Build the solution to compile the EasyImgui library.
+   Build the solution to compile the EasyImgui library/TestApp.
 
 5. **Add Reference**:
 
    - In your own project, add a reference to the compiled `EasyImGui.dll`.
    - Add additional references: `RenderSpy.dll` , `Hexa.NET.ImGui.dll` , `Hexa.NET.ImGui.Backends.dll`.
 
----
-
-## Getting Started
+## Example Usage
 
 To start using EasyImgui in your application:
 
-1. **Create an Instance of the Overlay**:
+1. **Import**:
 
    ```csharp
    using EasyImGui;
-
-   Overlay overlayWindow = new Overlay();
+   using EasyImGui.Core;
+   using System;
+   using System.Windows.Forms;
    ```
 
-2. **Configure the ImGui Context** (Optional):
+2. **Copy and Paste example code** :
 
    ```csharp
-   overlayWindow.ImguiManager.ConfigContex += () =>
-   {
-       // Customize ImGui style, colors, etc.
-       var style = ImGui.GetStyle();
-       style.WindowRounding = 5.0f;
-       // Other customizations...
-       return true;
-   };
+     internal class Program
+     {
+   
+         public static Overlay OverlayWindow = null;
+   
+         static void Main(string[] args)
+         {
+   
+             bool result = Diagnostic.RunDiagnostic();
+   
+             if (result)
+             {
+                 Console.WriteLine("All diagnostics passed. The system is ready.");
+             }
+             else
+             {
+                 Console.WriteLine("Some diagnostics failed. Please resolve the missing libraries, Press any key to continue.");
+                 Console.ReadKey();
+             }
+   
+             OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, ShowInTaskbar = true };
+   
+             OverlayWindow.ImguiManager.ConfigContex += OnConfigContex;
+             OverlayWindow.OnImGuiReady += (object sender, bool Status) =>
+             {
+                 if (Status)
+                 {
+                     OverlayWindow.ImguiManager.Render += Render;
+                 }
+                 else { Console.WriteLine("Unable to initialize Imgui"); }
+             };
+   
+             try { Application.Run(OverlayWindow); } catch (Exception Ex) { MessageBox.Show(Ex.Message); Environment.Exit(0); }
+         }
+   
+   
+         private static bool OnConfigContex()
+         {
+             OverlayWindow.ImguiManager.IO.ConfigDebugIsDebuggerPresent = false;
+             OverlayWindow.ImguiManager.IO.ConfigErrorRecoveryEnableAssert = false;
+             OverlayWindow.Location = new System.Drawing.Point(0, 0);
+             OverlayWindow.Size = new System.Drawing.Size(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
+             OverlayWindow.Interactive(true);
+             return true;
+         }
+   
+         private static bool Render()
+         {
+             Hexa.NET.ImGui.ImGui.ShowDemoWindow();
+   
+             return true;
+         }
+   
+     }
    ```
-
-3. **Handle the ImGui Ready Event**:
-
-   ```csharp
-   overlayWindow.OnImGuiReady += (sender, status) =>
-   {
-       if (status)
-       {
-           // ImGui is ready; set up rendering logic
-           overlayWindow.ImguiManager.Render += () =>
-           {
-               // Your ImGui rendering code here
-               ImGui.ShowDemoWindow();
-               return true;
-           };
-       }
-   };
-   ```
-
-4. **Run the Overlay**:
-
-   ```csharp
-   Application.Run(overlayWindow);
-   ```
-
----
-
-## Class Overview
-
-### Overlay Class
-
-**Namespace**: `EasyImGui`
-
-The `Overlay` class inherits from `D3D9Window` and serves as the main window for rendering the ImGui overlay.
-
-#### Key Features:
-
-- **Initialization**: Sets up the Direct3D9 device and initializes ImGui.
-- **Events**:
-  - `OnImGuiReady`: Triggered when ImGui is ready to render.
-- **Methods**:
-  - `FitTo(IntPtr windowHandle, bool attachToClientArea)`: Adapts the overlay size and position to another window.
-  - `PlaceAbove(IntPtr windowHandle)`: Places the overlay above a specified window in the Z-order.
-  - `Interactive(bool status)`: Toggles the overlay's interactivity.
-
-### D3D9Window Class
-
-**Namespace**: `RenderSpy.Overlay`
-
-The `D3D9Window` class extends `RenderForm` and provides the underlying Direct3D9 rendering capabilities.
-
-#### Key Features:
-
-- **Device Management**: Handles the creation and resetting of the Direct3D9 device.
-- **Rendering Loop**: Uses `RenderLoop` to continuously render frames.
-- **Events**:
-  - `OnD3DReady`: Triggered when the Direct3D9 device is ready.
-- **Customization**:
-  - Supports window dragging and resizable borders.
-  - Allows for custom present parameters.
-
-#### Usage Notes:
-
-- This class is primarily used internally by the `Overlay` class.
-- Can be extended or modified for advanced rendering scenarios.
-
----
-
-### ImguiManager Class
-
-**Namespace**: *EasyImGui.Core*
-
-The `ImguiManager` class manages the ImGui context and rendering pipeline.
-
-#### Key Features:
-
-- **Initialization**: Loads ImGui bindings and initializes the context.
-- **Event Handling**:
-  - `Render`: Event for rendering ImGui elements.
-  - `ConfigContex`: Event for configuring the ImGui context.
-  - `OnLostDevice`: Handles device loss scenarios.
-  - `OnResetDevice`: Handles device resets.
-- **Direct3D9 Hooks**: Hooks into Direct3D9 `Present` and `Reset` methods for rendering.
-
-## Example Usage
-
-Below is a basic example demonstrating how to use EasyImgui to create an overlay with ImGui in a WinForms application.
-
-```csharp
-using EasyImGui;
-using Hexa.NET.ImGui;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace TestApp
-{
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            using (Overlay overlayWindow = new Overlay()
-            {
-                EnableDrag = false,
-                ResizableBorders = true,
-                ShowInTaskbar = false
-            })
-            {
-                // Configure the ImGui context
-                overlayWindow.ImguiManager.ConfigContex += () =>
-                {
-                    var style = ImGui.GetStyle();
-                    style.WindowRounding = 5.0f;
-                    // Other style customizations...
-
-                    overlayWindow.Size = new Size(800, 600);
-                    return true;
-                };
-
-                // Handle the ImGui ready event
-                overlayWindow.OnImGuiReady += (sender, status) =>
-                {
-                    if (status)
-                    {
-                        bool showDemoWindow = true;
-
-                        overlayWindow.ImguiManager.Render += () =>
-                        {
-                            // ImGui rendering code
-                            ImGui.ShowDemoWindow(ref showDemoWindow);
-
-                            // Toggle overlay interactivity based on ImGui window visibility
-                            overlayWindow.Interactive(showDemoWindow);
-
-                            return true;
-                        };
-                    }
-                };
-
-                // Run the overlay window
-                try
-                {
-                    Application.Run(overlayWindow);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    Environment.Exit(0);
-                }
-            }
-        }
-    }
-}
-```
-
-**Explanation**:
-
-- **Creating the Overlay**: An instance of `Overlay` is created with specific properties.
-- **Configuring ImGui**: The `ConfigContex` event is used to customize the ImGui style and window size.
-- **Rendering ImGui**: The `Render` event is where ImGui rendering logic is placed.
-- **Running the Application**: The overlay window is run inside a `using` block to ensure proper disposal.
-
-**see:** [TestApp/Program.cs](https://github.com/DestroyerDarkNess/EasyImGui/blob/main/TestApp/Program.cs)
-
----
 
 ## Conclusion
 
