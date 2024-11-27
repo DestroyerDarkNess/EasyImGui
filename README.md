@@ -86,6 +86,7 @@ To start using EasyImgui in your application:
    ```csharp
    using EasyImGui;
    using EasyImGui.Core;
+   using Hexa.NET.ImGui;
    using System;
    using System.Windows.Forms;
    ```
@@ -141,7 +142,7 @@ To start using EasyImgui in your application:
    
          private static bool Render()
          {
-             Hexa.NET.ImGui.ImGui.ShowDemoWindow();
+             ImGui.ShowDemoWindow();
    
              return true;
          }
