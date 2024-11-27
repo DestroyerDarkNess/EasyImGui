@@ -90,7 +90,7 @@ To start using EasyImgui in your application:
    using System.Windows.Forms;
    ```
 
-2. **Copy and Paste example code** :
+2. **Copy and Paste example code (External Normal Mode)** :
 
    ```csharp
      internal class Program
@@ -148,6 +148,8 @@ To start using EasyImgui in your application:
    
      }
    ```
+
+  3. **EasyImGui has 2 additional modes for overlaying on applications (InGame and InGameEmbed) if you want to see how to implement it check the complete example:** [Program.cs](https://github.com/DestroyerDarkNess/EasyImGui/blob/main/TestApp/Program.cs)
 
 ## Conclusion
 
