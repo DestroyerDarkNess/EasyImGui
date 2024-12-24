@@ -22,6 +22,7 @@ namespace EasyImGui.Core
         public Hexa.NET.ImGui.ImGuiIOPtr IO;
         public IntPtr WindowTargetHandle = IntPtr.Zero;
         public bool Imgui_Alive = false;
+        public bool InstallReset_Hook = false;
 
         #endregion
 
@@ -146,20 +147,28 @@ namespace EasyImGui.Core
                         return PresentHook_9.Present_orig(device, sourceRect, destRect, hDestWindowOverride, dirtyRegion);
                     };
 
-                    ResetHook_9.Install();
 
-                    ResetHook_9.Reset_Event += (IntPtr device, ref SharpDX.Direct3D9.PresentParameters presentParameters) =>
+
+                    if (InstallReset_Hook)
                     {
-                        OnLostDevice?.Invoke();
-                        if (Imgui_Ini == true) { Hexa.NET.ImGui.Backends.D3D9.ImGuiImplD3D9.InvalidateDeviceObjects(); }
 
-                        int Reset = ResetHook_9.Reset_orig(device, ref presentParameters);
+                        ResetHook_9.Install();
 
-                        if (Imgui_Ini == true) { Hexa.NET.ImGui.Backends.D3D9.ImGuiImplD3D9.CreateDeviceObjects(); }
-                        OnResetDevice?.Invoke();
+                        ResetHook_9.Reset_Event += (IntPtr device, ref SharpDX.Direct3D9.PresentParameters presentParameters) =>
+                        {
+                            OnLostDevice?.Invoke();
+                            if (Imgui_Ini == true) { Hexa.NET.ImGui.Backends.D3D9.ImGuiImplD3D9.InvalidateDeviceObjects(); }
 
-                        return Reset;
-                    };
+                            int Reset = ResetHook_9.Reset_orig(device, ref presentParameters);
+
+                            if (Imgui_Ini == true) { Hexa.NET.ImGui.Backends.D3D9.ImGuiImplD3D9.CreateDeviceObjects(); }
+                            OnResetDevice?.Invoke();
+
+                            return Reset;
+                        };
+
+                    }
+
 
                     return true;
                 }

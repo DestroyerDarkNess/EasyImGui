@@ -125,28 +125,35 @@ namespace EasyImGui
         /// <param name="attachToClientArea">A Boolean determining whether to fit to the client area of the target window.</param>
         public void FitTo(IntPtr windowHandle, bool attachToClientArea = false)
         {
-            WindowBounds rect;
-            bool result = attachToClientArea ? WindowHelper.GetWindowClientBounds(windowHandle, out rect) : WindowHelper.GetWindowBounds(windowHandle, out rect);
+            bool gotBounds = attachToClientArea
+                ? WindowHelper.GetWindowClientBounds(windowHandle, out var bounds)
+                : WindowHelper.GetWindowBounds(windowHandle, out bounds);
 
-            if (result)
+            if (!gotBounds)
             {
-                int X = this.Location.X;
-                int Y = this.Location.Y;
-                int x = rect.Left;
-                int y = rect.Top;
-                int width = rect.Right - rect.Left;
-                int height = rect.Bottom - rect.Top;
+                // Si no se pudo obtener correctamente los bounds, salir o manejar de otra forma
+                return;
+            }
 
-                if (X != x
-                    || Y != y
-                    || Width != width
-                    || Height != height)
-                {
-                    this.Location = new Point(x, y);
-                    this.Size = new Size(width, height);
-                }
+            // Verifica si el rectángulo es válido (no está a cero).
+            int width = bounds.Right - bounds.Left;
+            int height = bounds.Bottom - bounds.Top;
+
+            if (width <= 0 || height <= 0)
+            {
+                // Significa que la ventana está minimizada o no disponible
+                return;
+            }
+
+            int x = base.Location.X;
+            int y = base.Location.Y;
+            if (x != bounds.Left || y != bounds.Top || base.Width != width || base.Height != height)
+            {
+                base.Location = new Point(bounds.Left, bounds.Top);
+                base.Size = new Size(width, height);
             }
         }
+
 
         /// <summary>
         /// Places the OverlayWindow above the target window according to the windows z-order.
