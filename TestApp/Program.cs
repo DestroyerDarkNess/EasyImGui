@@ -27,7 +27,7 @@ namespace TestApp
         private const int WS_EX_NOACTIVATE = 0x00080000;
         private const int WS_EX_TOOLWINDOW = 0x00000080;
 
-        public static OverlayMode overlayMode = OverlayMode.Normal; // Use this to change the overlay mode
+        public static OverlayMode overlayMode = OverlayMode.InGameEmbed; // Use this to change the overlay mode
 
         static void Main(string[] args)
         {
@@ -43,7 +43,7 @@ namespace TestApp
                 Console.ReadKey();
             }
 
-            Process GameProc = Process.GetProcessesByName("hl").FirstOrDefault(); //InGameEmbed Tested on Counter Striker 1.6, Battlefield 4, notepad XD.
+            Process GameProc = Process.GetProcessesByName("notepad").FirstOrDefault(); //InGameEmbed Tested on Counter Striker 1.6, Battlefield 4, notepad XD.
 
             if (GameProc == null && (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed))
             {
@@ -51,13 +51,12 @@ namespace TestApp
                 return;
             }
 
-            bool UseCustomD3dDevice = true;
+            bool UseCustomD3dDevice = false;
 
             using (Overlay OverlayWindow = new Overlay() { EnableDrag = false, ResizableBorders = true, ShowInTaskbar = false, AutoInitialize = !UseCustomD3dDevice })
             {
 
                 OverlayWindow.ImguiManager.Architecture = Runtimes.Architecture.Auto;
-
                 OverlayWindow.PresentParams = new SharpDX.Direct3D9.PresentParameters
                 {
                     Windowed = true,
@@ -258,7 +257,7 @@ namespace TestApp
 
                             if (overlayMode == OverlayMode.InGame || overlayMode == OverlayMode.InGameEmbed)
                             {
-                                OverlayWindow.Location = new System.Drawing.Point(0, 0);
+                                if (overlayMode == OverlayMode.InGameEmbed) OverlayWindow.Location = new System.Drawing.Point(0, 0);
                                 OverlayWindow.FitTo(GameProc.MainWindowHandle, true);
                                 OverlayWindow.PlaceAbove(GameProc.MainWindowHandle);
                             }
