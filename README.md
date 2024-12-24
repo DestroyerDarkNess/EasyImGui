@@ -33,7 +33,7 @@
      Open the Package Manager Console and run:
 
      ```powershell
-     Install-Package EasyImGui -Version 1.1.0
+     Install-Package EasyImGui -Version 1.1.2
      ```
 
    - **.NET CLI**:
@@ -41,7 +41,7 @@
      If you prefer using the .NET CLI, run:
 
      ```bash
-     dotnet add package EasyImGui --version 1.1.0
+     dotnet add package EasyImGui --version 1.1.2
      ```
 
    - **Visual Studio Package Manager GUI**:
@@ -49,7 +49,7 @@
      - Right-click on your project in the Solution Explorer.
      - Select **Manage NuGet Packages**.
      - Search for **EasyImGui**.
-     - Install version **1.1.0**.
+     - Install version **1.1.2**.
 
 ### Option 2: Compile from Source
 
