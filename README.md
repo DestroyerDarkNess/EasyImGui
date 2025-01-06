@@ -8,6 +8,12 @@
 
 ![{E59BADD4-BFA8-48B4-B9F2-29C1E15262AF}](https://github.com/user-attachments/assets/0eb383b7-511c-463c-872e-ce50324a3f42)
 
+# Samples
+
+| Sample | Description       |
+|----------|---------------|
+| [SUBSTANCE](https://github.com/DestroyerDarkNess/SUBSTANCE) | Modern imgui menu created with EasyImgui, based on the design originally created by Past Owl | 
+ 
 ## Table of Contents
 
 1. [Features](#features)
